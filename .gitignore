@@ -1,0 +1,19 @@
+# Private settings and API keys: never upload these
+config/
+keys.toml
+*.toml.bak
+
+# Python's temporary files
+__pycache__/
+*.pyc
+
+# Downloads and update packages
+*.tgz
+*.tar.gz
+
+# Editor and system clutter
+.venv/
+.idea/
+.vscode/
+*.swp
+.DS_Store
