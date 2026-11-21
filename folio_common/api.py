@@ -123,6 +123,8 @@ class Http:
         try:
             with os.fdopen(fd, "wb") as f:
                 f.write(data)
+            from folio_nfo.core import FILE_MODE
+            os.chmod(tmp, FILE_MODE)        # a temporary file is owner-only: give it a normal file's rights
             os.replace(tmp, dest)
         except BaseException:
             Path(tmp).unlink(missing_ok=True)

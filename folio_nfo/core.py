@@ -233,6 +233,11 @@ def _sub(parent: ET.Element, tag: str, text) -> ET.Element:
     return e
 
 
+_UMASK = os.umask(0)            # read once when loaded (setting it is the only way to read it)
+os.umask(_UMASK)
+FILE_MODE = 0o666 & ~_UMASK     # what a normally saved file gets (usually rw-r--r--)
+
+
 def write_elements(path: Path, elements: list[ET.Element], trailing: str = "") -> None:
     """Write one or more root elements as a Kodi-style NFO, atomically."""
     parts = ['<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>']
@@ -248,6 +253,7 @@ def write_elements(path: Path, elements: list[ET.Element], trailing: str = "") -
     try:
         with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
             f.write(data)
+        os.chmod(tmp, FILE_MODE)            # a temporary file is owner-only: give it a normal file's rights
         os.replace(tmp, path)
     except BaseException:
         Path(tmp).unlink(missing_ok=True)
